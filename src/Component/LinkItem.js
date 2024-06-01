@@ -1,30 +1,11 @@
 import { FiMoreVertical } from "react-icons/fi";
 import { CiEdit } from "react-icons/ci";
-import { useRef, useEffect } from "react";
 
-function LinkItem({
-  link,
-  onEdit,
-  onDelete,
-  onToggleMenu,
-  menuOpen,
-  onDragStart,
-}) {
-  const menuRef = useRef();
-
+function LinkItem({ link, onEdit, onDelete, onToggleMenu, menuOpen }) {
   return (
-    <div
-      className="flex items-center justify-between bg-gray-50 rounded-md p-4 mb-4 shadow-sm mx-auto"
-      draggable
-      onDragStart={(e) => onDragStart(e, link)}
-    >
+    <div className="flex items-center justify-between bg-gray-50 rounded-md p-4 mb-4 shadow-sm mx-auto">
       <div className="flex items-center">
-        <img
-          src="/images/icons8-chain-48.png"
-          alt="PDF Icon"
-          className="w-7 h-7"
-        />
-        <div className="ml-2">
+        <div className="flex flex-col">
           <span className="text-xl font-bold text-gray-700">
             {link.displayName}
           </span>
@@ -32,14 +13,13 @@ function LinkItem({
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="block font-medium text-gray-500 hover:underline"
+            className=" font-medium text-gray-500 hover:underline"
           >
             Link
           </a>
         </div>
       </div>
-
-      <div className="relative" ref={menuRef}>
+      <div className="relative">
         <button
           onClick={() => onToggleMenu(link.id, "link")}
           className="text-gray-600 hover:text-gray-900"

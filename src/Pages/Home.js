@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ModuleItem from "./ModuleItem";
 import PdfItem from "./PdfItem";
 import LinkItem from "./LinkItem";
@@ -8,6 +8,11 @@ import EditModuleModal from "./EditModuleModal";
 import FileUpload from "./FileUpload";
 import RenamePdfModal from "./RenamePdfModal";
 import AddLinkModal from "./AddLinkModal";
+import { IoAdd } from "react-icons/io5";
+// Utility function to generate unique IDs
+const generateUniqueId = () => {
+  return `id-${Math.random().toString(36).substr(2, 9)}`;
+};
 
 function Home() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -22,6 +27,22 @@ function Home() {
   const [renameModalOpen, setRenameModalOpen] = useState(false);
   const [linkModalOpen, setLinkModalOpen] = useState(false);
   const [editLinkData, setEditLinkData] = useState(null);
+
+  const menuRef = useRef();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpenId(null);
+        setMenuOpenType(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuRef]);
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -53,7 +74,10 @@ function Home() {
   };
 
   const addModule = (moduleName) => {
-    setModules([...modules, { name: moduleName, id: modules.length }]);
+    setModules([
+      ...modules,
+      { name: moduleName, id: generateUniqueId(), files: [], links: [] },
+    ]);
     closeModal();
   };
 
@@ -72,7 +96,10 @@ function Home() {
   };
 
   const handleFileUpload = (fileUrl, fileName) => {
-    setPdfs([...pdfs, { url: fileUrl, name: fileName, id: pdfs.length }]);
+    setPdfs([
+      ...pdfs,
+      { url: fileUrl, name: fileName, id: generateUniqueId() },
+    ]);
   };
 
   const editModule = (id, newName) => {
@@ -120,7 +147,7 @@ function Home() {
       );
       setEditLinkData(null);
     } else {
-      setLinks([...links, { ...link, id: links.length }]);
+      setLinks([...links, { ...link, id: generateUniqueId() }]);
     }
     closeLinkModal();
   };
@@ -132,6 +159,38 @@ function Home() {
   const handleEditLink = (link) => {
     setEditLinkData(link);
     setLinkModalOpen(true);
+  };
+
+  const handleDropOnModule = (e, moduleId) => {
+    const data = e.dataTransfer.getData("text");
+    if (!data) return;
+    const parsedData = JSON.parse(data);
+
+    if (parsedData.type === "pdf") {
+      setModules((prevModules) =>
+        prevModules.map((module) => {
+          if (module.id === moduleId) {
+            return { ...module, files: [...module.files, parsedData.item] };
+          }
+          return module;
+        })
+      );
+      setPdfs(pdfs.filter((p) => p.id !== parsedData.item.id));
+    } else if (parsedData.type === "link") {
+      setModules((prevModules) =>
+        prevModules.map((module) => {
+          if (module.id === moduleId) {
+            return { ...module, links: [...module.links, parsedData.item] };
+          }
+          return module;
+        })
+      );
+      setLinks(links.filter((l) => l.id !== parsedData.item.id));
+    }
+  };
+
+  const handleDragStart = (e, item, type) => {
+    e.dataTransfer.setData("text", JSON.stringify({ type, item }));
   };
 
   return (
@@ -173,7 +232,7 @@ function Home() {
           {modules.length === 0 && pdfs.length === 0 && links.length === 0 ? (
             <div className="text-center">
               <img
-                src="images/box_image.jpg"
+                src="images/box_image1.png"
                 alt="box image"
                 className="mx-auto mb-4 w-64 h-48 sm:w-[272px] sm:h-[192px]"
               />
@@ -187,16 +246,48 @@ function Home() {
           ) : (
             <>
               {modules.map((module) => (
-                <ModuleItem
+                <div
                   key={module.id}
-                  module={module}
-                  onEdit={handleEditModule}
-                  onDelete={deleteModule}
-                  onToggleMenu={toggleMenu}
-                  menuOpen={
-                    menuOpenId === module.id && menuOpenType === "module"
-                  }
-                />
+                  onDrop={(e) => handleDropOnModule(e, module.id)}
+                  onDragOver={(e) => e.preventDefault()}
+                  className="p-4 border border-gray-200 rounded-md mb-4"
+                >
+                  <ModuleItem
+                    module={module}
+                    onEdit={handleEditModule}
+                    onDelete={deleteModule}
+                    onToggleMenu={toggleMenu}
+                    menuOpen={
+                      menuOpenId === module.id && menuOpenType === "module"
+                    }
+                  />
+                  {module.files.map((file, index) => (
+                    <PdfItem
+                      key={index}
+                      pdf={file}
+                      onRename={handleRenamePdf}
+                      onDelete={deletePdf}
+                      onToggleMenu={toggleMenu}
+                      menuOpen={
+                        menuOpenId === file.id && menuOpenType === "pdf"
+                      }
+                      onDragStart={(e) => handleDragStart(e, file, "pdf")}
+                    />
+                  ))}
+                  {module.links.map((link, index) => (
+                    <LinkItem
+                      key={index}
+                      link={link}
+                      onEdit={handleEditLink}
+                      onDelete={deleteLink}
+                      onToggleMenu={toggleMenu}
+                      menuOpen={
+                        menuOpenId === link.id && menuOpenType === "link"
+                      }
+                      onDragStart={(e) => handleDragStart(e, link, "link")}
+                    />
+                  ))}
+                </div>
               ))}
               {links.map((link) => (
                 <LinkItem
@@ -206,6 +297,7 @@ function Home() {
                   onDelete={deleteLink}
                   onToggleMenu={toggleMenu}
                   menuOpen={menuOpenId === link.id && menuOpenType === "link"}
+                  onDragStart={(e) => handleDragStart(e, link, "link")}
                 />
               ))}
               {pdfs.map((pdf) => (
@@ -216,6 +308,7 @@ function Home() {
                   onDelete={deletePdf}
                   onToggleMenu={toggleMenu}
                   menuOpen={menuOpenId === pdf.id && menuOpenType === "pdf"}
+                  onDragStart={(e) => handleDragStart(e, pdf, "pdf")}
                 />
               ))}
             </>

@@ -2,8 +2,19 @@ import React from "react";
 import { FiMoreVertical } from "react-icons/fi";
 import { CiEdit } from "react-icons/ci";
 import { MdOutlineArrowDropDownCircle } from "react-icons/md";
+import { MdArrowUpward, MdArrowDownward } from "react-icons/md";
 
-function ModuleItem({ module, onEdit, onDelete, onToggleMenu, menuOpen }) {
+function ModuleItem({
+  module,
+  onEdit,
+  onDelete,
+  onToggleMenu,
+  menuOpen,
+  onMoveUp,
+  onMoveDown,
+  isFirst,
+  isLast,
+}) {
   const itemCount = module.files.length + module.links.length;
 
   return (
@@ -19,7 +30,25 @@ function ModuleItem({ module, onEdit, onDelete, onToggleMenu, menuOpen }) {
           )}
         </div>
       </div>
-      <div className="relative">
+      <div className="relative flex items-center space-x-2">
+        <button
+          onClick={() => onMoveUp(module.id)}
+          disabled={isFirst}
+          className={`text-gray-600 hover:text-gray-900 ${
+            isFirst ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+        >
+          <MdArrowUpward className="h-5 w-5" />
+        </button>
+        <button
+          onClick={() => onMoveDown(module.id)}
+          disabled={isLast}
+          className={`text-gray-600 hover:text-gray-900 ${
+            isLast ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+        >
+          <MdArrowDownward className="h-5 w-5" />
+        </button>
         <button
           onClick={() => onToggleMenu(module.id, "module")}
           className="text-gray-600 hover:text-gray-900"

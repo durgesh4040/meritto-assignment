@@ -2,7 +2,6 @@ import React from "react";
 import { FiMoreVertical } from "react-icons/fi";
 import { CiEdit } from "react-icons/ci";
 import { RiDownloadLine } from "react-icons/ri";
-import { BsFillFilePdfFill } from "react-icons/bs";
 
 function PdfItem({
   pdf,
@@ -19,11 +18,8 @@ function PdfItem({
       onDragStart={(e) => onDragStart(e, pdf)}
     >
       <div className="flex items-center space-x-4">
-        <img src="/images/pdf.svg" alt="PDF Icon" className="w-6 h-6" />
-        <div className="flex flex-col">
-          <span className="text-lg font-medium">{pdf.name}</span>
-          <p className="text-sm">PDF</p>
-        </div>
+        <img src="/images/pdf-icon.svg" alt="PDF Icon" className="w-6 h-6" />
+        <span className="text-lg font-medium">{pdf.name}</span>
       </div>
       <div className="relative">
         <button

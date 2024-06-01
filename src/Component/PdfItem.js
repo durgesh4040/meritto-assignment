@@ -1,29 +1,13 @@
-import React from "react";
 import { FiMoreVertical } from "react-icons/fi";
 import { CiEdit } from "react-icons/ci";
 import { RiDownloadLine } from "react-icons/ri";
-import { BsFillFilePdfFill } from "react-icons/bs";
 
-function PdfItem({
-  pdf,
-  onRename,
-  onDelete,
-  onToggleMenu,
-  menuOpen,
-  onDragStart,
-}) {
+function PdfItem({ pdf, onRename, onDelete, onToggleMenu, menuOpen }) {
   return (
-    <div
-      className="flex items-center justify-between bg-gray-50 rounded-md p-4 mb-4 shadow-sm mx-auto"
-      draggable
-      onDragStart={(e) => onDragStart(e, pdf)}
-    >
+    <div className="flex items-center justify-between bg-gray-50 rounded-md p-4 mb-4 shadow-sm mx-auto">
       <div className="flex items-center space-x-4">
-        <img src="/images/pdf.svg" alt="PDF Icon" className="w-6 h-6" />
-        <div className="flex flex-col">
-          <span className="text-lg font-medium">{pdf.name}</span>
-          <p className="text-sm">PDF</p>
-        </div>
+        {/* <img src="/images/pdf-icon.svg" alt="PDF Icon" className="w-6 h-6" /> */}
+        <span className="text-lg font-medium">{pdf.name}</span>
       </div>
       <div className="relative">
         <button
@@ -56,7 +40,7 @@ function PdfItem({
               className="block px-4 py-2 text-gray-800 hover:bg-red-100 text-red-500"
             >
               <img
-                src="/images/icons8-trash.svg"
+                src="/images/pdf.svg"
                 alt="Trash Icon"
                 width="20"
                 height="20"

@@ -9,6 +9,11 @@ import FileUpload from "./FileUpload";
 import RenamePdfModal from "./RenamePdfModal";
 import AddLinkModal from "./AddLinkModal";
 
+// Utility function to generate unique IDs
+const generateUniqueId = () => {
+  return `id-${Math.random().toString(36).substr(2, 9)}`;
+};
+
 function Home() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -71,7 +76,7 @@ function Home() {
   const addModule = (moduleName) => {
     setModules([
       ...modules,
-      { name: moduleName, id: modules.length, files: [], links: [] },
+      { name: moduleName, id: generateUniqueId(), files: [], links: [] },
     ]);
     closeModal();
   };
@@ -91,7 +96,10 @@ function Home() {
   };
 
   const handleFileUpload = (fileUrl, fileName) => {
-    setPdfs([...pdfs, { url: fileUrl, name: fileName, id: pdfs.length }]);
+    setPdfs([
+      ...pdfs,
+      { url: fileUrl, name: fileName, id: generateUniqueId() },
+    ]);
   };
 
   const editModule = (id, newName) => {
@@ -139,7 +147,7 @@ function Home() {
       );
       setEditLinkData(null);
     } else {
-      setLinks([...links, { ...link, id: links.length }]);
+      setLinks([...links, { ...link, id: generateUniqueId() }]);
     }
     closeLinkModal();
   };
@@ -185,6 +193,20 @@ function Home() {
     e.dataTransfer.setData("text", JSON.stringify({ type, item }));
   };
 
+  const moveModule = (id, direction) => {
+    const index = modules.findIndex((module) => module.id === id);
+    if (index === -1) return;
+
+    const newModules = [...modules];
+    const [removed] = newModules.splice(index, 1);
+    if (direction === "up" && index > 0) {
+      newModules.splice(index - 1, 0, removed);
+    } else if (direction === "down" && index < modules.length - 1) {
+      newModules.splice(index + 1, 0, removed);
+    }
+    setModules(newModules);
+  };
+
   return (
     <>
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4">
@@ -224,7 +246,7 @@ function Home() {
           {modules.length === 0 && pdfs.length === 0 && links.length === 0 ? (
             <div className="text-center">
               <img
-                src="images/box_image.jpg"
+                src="images/box_image1.png"
                 alt="box image"
                 className="mx-auto mb-4 w-64 h-48 sm:w-[272px] sm:h-[192px]"
               />
@@ -237,7 +259,7 @@ function Home() {
             </div>
           ) : (
             <>
-              {modules.map((module) => (
+              {modules.map((module, index) => (
                 <div
                   key={module.id}
                   onDrop={(e) => handleDropOnModule(e, module.id)}
@@ -252,6 +274,10 @@ function Home() {
                     menuOpen={
                       menuOpenId === module.id && menuOpenType === "module"
                     }
+                    onMoveUp={() => moveModule(module.id, "up")}
+                    onMoveDown={() => moveModule(module.id, "down")}
+                    isFirst={index === 0}
+                    isLast={index === modules.length - 1}
                   />
                   {module.files.map((file, index) => (
                     <PdfItem
