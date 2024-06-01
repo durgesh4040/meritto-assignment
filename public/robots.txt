@@ -1,3 +1,40 @@
-# https://www.robotstxt.org/robotstxt.html
-User-agent: *
-Disallow:
+import React, { useState } from "react";
+
+function FileUpload({ onUpload }) {
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
+
+  const handleUpload = () => {
+    if (selectedFile) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        onUpload(event.target.result);
+      };
+      reader.readAsDataURL(selectedFile);
+    }
+  };
+
+  return (
+    <div>
+      <input
+        type="file"
+        onChange={handleFileChange}
+        accept=".pdf"
+        style={{ display: "none" }}
+        id="fileInput"
+      />
+      <label htmlFor="fileInput" className="block px-4 py-2 text-gray-800 hover:bg-gray-100 cursor-pointer">
+        ↗ Upload
+      </label>
+      <button onClick={handleUpload} className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+        Upload
+      </button>
+    </div>
+  );
+}
+
+export default FileUpload;
+
