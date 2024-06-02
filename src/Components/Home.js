@@ -8,6 +8,14 @@ import EditModuleModal from "./EditModuleModal";
 import FileUpload from "./FileUpload";
 import RenamePdfModal from "./RenamePdfModal";
 import AddLinkModal from "./AddLinkModal";
+import { IoAdd } from "react-icons/io5";
+import { FaCaretDown } from "react-icons/fa6";
+import { AiOutlineDatabase } from "react-icons/ai";
+import { LuArrowUpFromLine } from "react-icons/lu";
+// Utility function to generate unique IDs
+const generateUniqueId = () => {
+  return `id-${Math.random().toString(36).substr(2, 9)}`;
+};
 
 function Home() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -22,6 +30,8 @@ function Home() {
   const [renameModalOpen, setRenameModalOpen] = useState(false);
   const [linkModalOpen, setLinkModalOpen] = useState(false);
   const [editLinkData, setEditLinkData] = useState(null);
+  const [draggingModule, setDraggingModule] = useState(null);
+  const [hoverIndex, setHoverIndex] = useState(null);
 
   const menuRef = useRef();
 
@@ -71,7 +81,7 @@ function Home() {
   const addModule = (moduleName) => {
     setModules([
       ...modules,
-      { name: moduleName, id: modules.length, files: [], links: [] },
+      { name: moduleName, id: generateUniqueId(), files: [], links: [] },
     ]);
     closeModal();
   };
@@ -91,7 +101,10 @@ function Home() {
   };
 
   const handleFileUpload = (fileUrl, fileName) => {
-    setPdfs([...pdfs, { url: fileUrl, name: fileName, id: pdfs.length }]);
+    setPdfs([
+      ...pdfs,
+      { url: fileUrl, name: fileName, id: generateUniqueId() },
+    ]);
   };
 
   const editModule = (id, newName) => {
@@ -139,7 +152,7 @@ function Home() {
       );
       setEditLinkData(null);
     } else {
-      setLinks([...links, { ...link, id: links.length }]);
+      setLinks([...links, { ...link, id: generateUniqueId() }]);
     }
     closeLinkModal();
   };
@@ -183,6 +196,30 @@ function Home() {
 
   const handleDragStart = (e, item, type) => {
     e.dataTransfer.setData("text", JSON.stringify({ type, item }));
+    if (type === "module") {
+      setDraggingModule(item);
+    }
+  };
+
+  const handleDragEnter = (e, index) => {
+    setHoverIndex(index);
+  };
+
+  const handleDragEnd = () => {
+    if (draggingModule !== null && hoverIndex !== null) {
+      const newModules = [...modules];
+      const draggedIndex = newModules.findIndex(
+        (module) => module.id === draggingModule.id
+      );
+
+      const [draggedModule] = newModules.splice(draggedIndex, 1);
+      newModules.splice(hoverIndex, 0, draggedModule);
+
+      setModules(newModules);
+    }
+
+    setDraggingModule(null);
+    setHoverIndex(null);
   };
 
   return (
@@ -196,19 +233,21 @@ function Home() {
         <div className="absolute top-4 right-4 sm:right-16">
           <button
             onClick={toggleDropdown}
-            className="relative bg-red-500 text-white py-2 px-4 rounded"
+            className="relative bg-red-500 text-white py-2 px-4 rounded flex items-center"
           >
-            + Add ^
+            <IoAdd className="mr-2" /> Add <FaCaretDown className="ml-2" />
           </button>
           {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10">
               <a
                 href="#"
                 onClick={openModal}
-                className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100"
               >
-                🧾Create module
+                <AiOutlineDatabase className="mr-2" />
+                <span>Create module</span>
               </a>
+
               <a
                 href="#"
                 onClick={openLinkModal}
@@ -224,7 +263,7 @@ function Home() {
           {modules.length === 0 && pdfs.length === 0 && links.length === 0 ? (
             <div className="text-center">
               <img
-                src="images/box_image.jpg"
+                src="images/box_image1.png"
                 alt="box image"
                 className="mx-auto mb-4 w-64 h-48 sm:w-[272px] sm:h-[192px]"
               />
@@ -237,12 +276,18 @@ function Home() {
             </div>
           ) : (
             <>
-              {modules.map((module) => (
+              {modules.map((module, index) => (
                 <div
                   key={module.id}
                   onDrop={(e) => handleDropOnModule(e, module.id)}
                   onDragOver={(e) => e.preventDefault()}
-                  className="p-4 border border-gray-200 rounded-md mb-4"
+                  onDragEnter={(e) => handleDragEnter(e, index)}
+                  onDragEnd={handleDragEnd}
+                  className={`p-4 border border-gray-200 rounded-md mb-4 ${
+                    hoverIndex === index ? "bg-gray-200" : ""
+                  }`}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, module, "module")}
                 >
                   <ModuleItem
                     module={module}

@@ -1,5 +1,5 @@
 import React from "react";
-
+import { LuArrowUpFromLine } from "react-icons/lu";
 function FileUpload({ onUpload }) {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -13,7 +13,10 @@ function FileUpload({ onUpload }) {
 
   return (
     <label className="block px-4 py-2 text-gray-800 hover:bg-gray-100 cursor-pointer">
-      ↗ Upload
+      <div className="flex items-center">
+        <LuArrowUpFromLine className="mr-2" />
+        <span>Upload</span>
+      </div>
       <input
         type="file"
         accept="application/pdf"
