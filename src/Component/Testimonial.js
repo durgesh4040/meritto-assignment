@@ -13,7 +13,7 @@ export default function Testimonial() {
           </p>
           <div className="flex items-center mt-4">
             <img
-              src="/path/to/avatar.jpg"
+              src="./alakh.webp"
               alt="Alakh Pandey"
               className="w-12 h-12 rounded-full mr-4"
             />
