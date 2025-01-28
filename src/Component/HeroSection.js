@@ -14,7 +14,7 @@ export default function HeroSection() {
           <h2 className="text-base md:text-lg lg:text-xl mb-6 mt-45">
             Empowering your journey with cutting-edge solutions.
           </p>
-          <button className="bg-blue-500 text-white py-2 px-6 rounded-lg text-base md:text-xl hover:bg-blue-600 transition">
+          <button className="bg-blue-500 text-white py-5 px-6 rounded-lg text-base md:text-xl hover:bg-blue-600 transition">
             Get Started
           </button>
         </div>
