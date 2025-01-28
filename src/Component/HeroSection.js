@@ -1,6 +1,6 @@
 export default function HeroSection() {
   return (
-    <div className="bg-purple-600 h-screen relative flex items-center justify-center">
+    <div className="bg-slate-700 h-screen relative flex items-center justify-center">
       
       <div className="absolute top-4 left-4 md:top-6 md:left-6">
         <img
