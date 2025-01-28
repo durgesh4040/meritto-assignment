@@ -29,13 +29,14 @@ Meritto streamlines admissions with user-friendly features, insightful analytics
           </p>
           <div className="flex items-center mt-4">
             <img
-              src="/path/to/avatar2.jpg"
-              alt="Jane Smith"
+              src="./abhay.webp"
+              alt="Abhay Chebbi"
               className="w-12 h-12 rounded-full mr-4"
             />
             <div>
-              <h4 className="text-xl font-semibold">Jane Smith</h4>
-              <p className="text-gray-500">Marketing Head, XYZ Inc.</p>
+              <h4 className="text-xl font-semibold">Abhay Chebbi
+              </h4>
+              <p className="text-gray-500">Director Admissions, AU.</p>
             </div>
           </div>
         </div>
