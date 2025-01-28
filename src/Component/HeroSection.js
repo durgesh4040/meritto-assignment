@@ -4,7 +4,7 @@ export default function HeroSection() {
       
       <div className="absolute top-4 left-4 md:top-6 md:left-6">
         <img
-          src="./images.png"
+          src="./merittologo.png"
           alt="Meritto Logo"
           className="h-10 md:h-14 lg:h-16 w-auto"
         />
