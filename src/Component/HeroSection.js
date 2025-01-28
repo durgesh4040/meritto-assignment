@@ -3,7 +3,7 @@ export default function HeroSection() {
     <div className="bg-slate-800 h-screen relative flex items-center justify-center">
       <div className="absolute top-6 left-6">
         <img
-          src="./meritto.avif"
+          src="./images.png"
           alt="Meritto Logo"
           className="h-12 md:h-16"
         />
