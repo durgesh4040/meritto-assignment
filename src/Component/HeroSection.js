@@ -11,7 +11,7 @@ export default function HeroSection() {
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4">
             Welcome to Meritto
           </h1>
-          <p className="text-base md:text-lg lg:text-xl mb-6">
+          <h2 className="text-base md:text-lg lg:text-xl mb-6 mt-45">
             Empowering your journey with cutting-edge solutions.
           </p>
           <button className="bg-blue-500 text-white py-2 px-6 rounded-lg text-base md:text-xl hover:bg-blue-600 transition">
