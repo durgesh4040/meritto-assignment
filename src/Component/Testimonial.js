@@ -25,7 +25,7 @@ export default function Testimonial() {
         </div>
         <div className="bg-gray-50 p-6 rounded-lg shadow-lg w-72">
           <p className="text-lg text-gray-600">
-            "A game changer for our team's productivity. Highly recommend!"
+Meritto streamlines admissions with user-friendly features, insightful analytics, and excellent client support.
           </p>
           <div className="flex items-center mt-4">
             <img
