@@ -1,11 +1,12 @@
 export default function HeroSection() {
   return (
     <div className="bg-slate-800 h-screen relative flex items-center justify-center">
-      <div className="absolute top-6 left-6">
+      
+      <div className="absolute top-4 left-4 md:top-6 md:left-6">
         <img
           src="./images.png"
           alt="Meritto Logo"
-          className="h-12 md:h-16"
+          className="h-10 md:h-14 lg:h-16 w-auto"
         />
       </div>
 
@@ -27,6 +28,7 @@ export default function HeroSection() {
     </div>
   );
 }
+
 
 
 
